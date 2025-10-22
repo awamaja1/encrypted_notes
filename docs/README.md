@@ -4,6 +4,13 @@ Welcome to the VaultNotes documentation! This folder contains comprehensive guid
 
 ## 📖 Table of Contents
 
+### 🏆 Hackathon Submission
+- **[Infinity Hackathon OJK-Ekraf 2025](infinityHackathon/)** - Complete submission package for hackathon
+  - **[START HERE](infinityHackathon/START_HERE.md)** ⭐ - Complete preparation guide
+  - **[Master Index](infinityHackathon/HACKATHON_DOCS_INDEX.md)** - How to use all documents
+  - **[Quick Reference](infinityHackathon/QUICK_REFERENCE.md)** - Print & keep beside you!
+  - Pitch deck templates, submission checklists, deployment guides, and more
+
 ### Getting Started
 - **[Quick Start Guide](QUICK_START_GUIDE.md)** - 5-minute setup for Summarizer Performance System
 

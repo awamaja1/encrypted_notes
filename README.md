@@ -4,12 +4,25 @@
   <img src="https://img.shields.io/badge/Built_with-Internet_Computer-29ABE2?style=for-the-badge&logo=internet-computer&logoColor=white" alt="Built with Internet Computer" />
   <img src="https://img.shields.io/badge/Powered_by-AI-FF6B6B?style=for-the-badge&logo=openai&logoColor=white" alt="AI Powered" />
   <img src="https://img.shields.io/badge/Web3-Decentralized-4ECDC4?style=for-the-badge&logo=web3dotjs&logoColor=white" alt="Web3 Decentralized" />
+  <img src="https://img.shields.io/badge/Infinity_Hackathon-OJK_Ekraf_2025-FF6B6B?style=for-the-badge" alt="Infinity Hackathon" />
 </div>
 
 <div align="center">
   <h3>🚀 The Future of Note-Taking is Here</h3>
   <p><strong>AI-powered • Decentralized • Secure • Collaborative</strong></p>
+  <p><em>"Your Creative Work, Your Proof, Your Rights"</em></p>
 </div>
+
+---
+
+## 🏆 Hackathon Submission
+
+**Participating in:** [Infinity Hackathon OJK-Ekraf 2025](https://infinityhackathon.id/hackathon/OJKRAF)  
+**Sub-Tema:** Digital Rights & Authentication  
+**Deadline:** 22 Oktober 2025
+
+**📁 Complete submission package:** [docs/infinityHackathon/](docs/infinityHackathon/)  
+**🚀 Quick start:** [HACKATHON.md](HACKATHON.md)
 
 ---
 
