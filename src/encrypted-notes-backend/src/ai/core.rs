@@ -78,15 +78,17 @@ pub fn summarize_text(request: SummaryRequest) -> SummaryResponse {
             &sentences
         );
         
-        // Position bonus: first few sentences get higher scores (increased bonuses)
+        // Position bonus: ENHANCED - first/last sentences critical for ROUGE scores
         let position_bonus = if idx == 0 {
-            3.5 // First sentence often contains main topic (increased from 2.0)
+            4.5 // First sentence (increased from 3.5) - usually contains main topic
         } else if idx == 1 {
-            2.5 // Second sentence (increased from 1.5)
-        } else if idx < 3 {
-            1.5 // Third sentence (increased from 1.0)
-        } else if idx >= total_sentences.saturating_sub(2) {
-            2.0 // Last sentences may contain conclusions (increased from 1.0)
+            3.0 // Second sentence (increased from 2.5) - supporting context
+        } else if idx == 2 {
+            2.0 // Third sentence (increased from 1.5)
+        } else if idx >= total_sentences.saturating_sub(3) && idx >= total_sentences.saturating_sub(1) {
+            3.5 // Last 2 sentences (increased from 2.0) - conclusions/results
+        } else if idx >= total_sentences.saturating_sub(5) && idx < total_sentences.saturating_sub(3) {
+            1.0 // Near-end sentences may contain summaries
         } else {
             0.0
         };

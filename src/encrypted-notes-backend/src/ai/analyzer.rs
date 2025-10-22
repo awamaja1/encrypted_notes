@@ -323,14 +323,16 @@ impl TextAnalyzer {
         let mut score = 0.0;
         let sentence_lower = sentence.to_lowercase();
 
-        // Length score (optimal length 10-25 words)
+        // Length score (optimal length 10-25 words) - INCREASED weight for informativeness
         let word_count = words.len();
         if word_count >= 10 && word_count <= 25 {
-            score += 3.0;
+            score += 4.0;  // Increased from 3.0 - optimal info density
         } else if word_count >= 5 && word_count < 10 {
-            score += 1.5;
-        } else if word_count > 25 {
-            score += 1.0; // Very long sentences get lower score
+            score += 2.0;  // Increased from 1.5
+        } else if word_count > 25 && word_count <= 35 {
+            score += 2.5;  // More lenient for detailed sentences
+        } else if word_count > 35 {
+            score += 1.0;
         }
 
         // Discourse markers (transition words indicating structure) - CRITICAL for coherence
@@ -350,12 +352,12 @@ impl TextAnalyzer {
         
         for marker in &discourse_markers {
             if sentence_lower.contains(marker) {
-                score += 3.5; // Increased from 2.5 - discourse markers are critical
-                break; // Only count once
+                score += 4.0; // Increased from 3.5 - crucial for coherence metric
+                break;
             }
         }
 
-        // Context awareness: Check for keyword overlap with previous sentences
+        // Context awareness: Enhanced to boost ROUGE-2 scores (bigram overlap)
         if let Some(prev_keywords) = previous_keywords {
             let current_words: HashSet<String> = words
                 .iter()
@@ -365,8 +367,8 @@ impl TextAnalyzer {
             
             let overlap_count = current_words.intersection(prev_keywords).count();
             if overlap_count > 0 {
-                // Bonus for maintaining topical continuity
-                score += (overlap_count as f64) * 0.8;
+                // Increased bonus for topical continuity (improves coherence + ROUGE-2)
+                score += (overlap_count as f64) * 1.2;  // Increased from 0.8
             }
         }
 
@@ -379,8 +381,18 @@ impl TextAnalyzer {
             question_indicators.iter().any(|q| sentence_lower.contains(q));
         
         if is_question {
-            score += 2.0; // Questions are often key to understanding
+            score += 2.5; // Increased from 2.0
         }
+
+        // N-gram richness: Calculate unique word density (boosts ROUGE-1)
+        let unique_words: HashSet<String> = words
+            .iter()
+            .map(|w| w.to_lowercase().trim_matches(|c: char| !c.is_alphabetic()).to_string())
+            .filter(|w| w.len() > 2)
+            .collect();
+        
+        let unique_ratio = unique_words.len() as f64 / word_count.max(1) as f64;
+        score += unique_ratio * 3.0;  // High unique word density = high informativeness
 
         // TF-IDF-like weighting: Calculate term rarity across all sentences
         if !all_sentences.is_empty() && all_sentences.len() > 3 {
@@ -390,7 +402,6 @@ impl TextAnalyzer {
                 .filter(|w| w.len() > 3)
                 .collect();
             
-            // Calculate IDF (Inverse Document Frequency) for words in current sentence
             let mut idf_score = 0.0;
             for word in &current_words {
                 let doc_freq = all_sentences.iter()
@@ -398,31 +409,33 @@ impl TextAnalyzer {
                     .count();
                 
                 if doc_freq > 0 && doc_freq < all_sentences.len() {
-                    // Words that appear in some but not all sentences are more valuable
                     let idf = ((all_sentences.len() as f64) / (doc_freq as f64)).ln();
                     idf_score += idf;
                 }
             }
             
-            // Normalize and add to score (reduced weight from 2.0 to 1.0)
+            // Normalized IDF bonus (improves coverage score)
             if !current_words.is_empty() {
-                score += (idf_score / current_words.len() as f64) * 1.0;
+                score += (idf_score / current_words.len() as f64) * 1.5;  // Increased from 1.0
             }
         }
 
-        // Keyword importance
+        // Keyword importance - ENHANCED for better informativeness
         let importance_keywords = [
             "penting", "utama", "pertama", "akhir", "kesimpulan",
             "important", "crucial", "significant", "key", "main", "primary",
             "conclusion", "summary", "result", "finding", "tujuan", "goal",
             "masalah", "problem", "solusi", "solution", "definisi", "definition",
             "penjelasan", "explanation", "alasan", "reason", "tujuan", "purpose",
+            "manfaat", "benefit", "keuntungan", "advantage", "inovasi", "innovation",
         ];
+        let mut importance_count = 0;
         for keyword in &importance_keywords {
             if sentence_lower.contains(keyword) {
-                score += 2.0;
+                importance_count += 1;
             }
         }
+        score += (importance_count as f64) * 2.5;  // Increased from 2.0
 
         // Content-type specific scoring (increased bonuses)
         match content_type {
